@@ -43,6 +43,9 @@ Both run a small detached helper after the window closes; its log is in the exte
 
 ## Creating the file
 
+When the extension is enabled and a folder has no `.vscode/required-extensions.json`, it creates one on startup
+listing every installed extension, so nothing is disabled until you trim the list.
+
 - **Per-Project Extensions: Review Required Extensions** (or click the status bar item) shows every installed extension
   as a checklist and saves the checked ones to the file. If the file doesn't exist yet, the list is pre-filled by
   scanning the project: file languages, `activationEvents` (`onLanguage`, `workspaceContains`), `package.json`
@@ -63,8 +66,7 @@ The status bar shows how many installed extensions aren't required.
 
 The extension is built to stay out of the way:
 
-- **It only loads in projects that have `.vscode/required-extensions.json`.** Anywhere else it never activates;
-  its commands still work and load it on demand.
+- **It loads after startup finishes** (`onStartupFinished`), so it never slows down opening a window.
 - **It never scans your project in the background.** The file scan runs only when you run *Detect* or *Review*
   without a file.
 - **Two tiny watchers.** One on `required-extensions.json`, one on the profile's installed-extensions list. No polling,

@@ -28,7 +28,7 @@
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
-    "workspaceContains:.vscode/required-extensions.json"
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
@@ -74,7 +74,7 @@
         "projectExtensions.enabled": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Turn Per-Project Extensions on or off. When off it does no background work at all: no status bar item, no file watchers, no startup check and no syncing of `required-extensions.json`. Takes effect immediately; can be set per workspace."
+          "markdownDescription": "Turn Per-Project Extensions on or off. When off it does no background work at all: no status bar item, no file watchers, no startup check, no creating or syncing of `required-extensions.json`. Takes effect immediately; can be set per workspace."
         },
         "projectExtensions.alwaysEnabled": {
           "type": "array",

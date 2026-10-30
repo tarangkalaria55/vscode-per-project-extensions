@@ -7,6 +7,7 @@ import {
   analyze,
   ExtensionReport,
   REQUIRED_FILE,
+  RequiredFile,
   readRequiredFile,
   requiredFileUri,
   isBuiltin,
@@ -260,7 +261,7 @@ async function startupCheck(context: vscode.ExtensionContext): Promise<void> {
   // installs/uninstalls made while the manager wasn't running.
   const installedFile = await installedListPath(context);
   const installed = installedFile && (await readInstalled(installedFile));
-  const file = await readRequiredFile();
+  const file = (await readRequiredFile()) ?? (await createFromInstalled(installed || undefined));
   if (current === profileName() && installed && file) {
     // Right after "Open in Project Profile" the helper is still installing; don't mistake that for uninstalls.
     const listed = (await recentlyRelaunched(context))
@@ -290,6 +291,29 @@ async function startupCheck(context: vscode.ExtensionContext): Promise<void> {
       .getConfiguration('projectExtensions')
       .update('notifyOnStartup', false, vscode.ConfigurationTarget.Workspace);
   }
+}
+
+/**
+ * Starts a missing required-extensions.json with every installed extension, so nothing is disabled until the user
+ * trims the list. A file that exists but doesn't parse is left alone.
+ */
+async function createFromInstalled(installed: Map<string, string> | undefined): Promise<RequiredFile | undefined> {
+  const uri = requiredFileUri();
+  if (!uri) return undefined;
+  try {
+    await vscode.workspace.fs.stat(uri);
+    return undefined;
+  } catch {
+    // Doesn't exist yet.
+  }
+  const ids = installed
+    ? [...installed.values()]
+    : vscode.extensions.all.filter((e) => !isBuiltin(e) && e.id.toLowerCase() !== selfId()).map((e) => e.id);
+  await writeRequiredFile(ids);
+  const message = `Created ${vscode.workspace.asRelativePath(uri)} with ${ids.length} installed extension(s)`;
+  output().appendLine(message);
+  vscode.window.setStatusBarMessage(`$(extensions) ${message}`, 6000);
+  return { required: ids };
 }
 
 /* --------------------------------------------------------------- commands */

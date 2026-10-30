@@ -28,7 +28,7 @@ suite('Per-Project Extensions', () => {
     await vscode.workspace.fs.writeFile(current, original);
   });
 
-  test('activates in a workspace with .vscode/required-extensions.json', async () => {
+  test('activates', async () => {
     const ext = vscode.extensions.getExtension(SELF);
     assert.ok(ext, `${SELF} is loaded`);
     await ext.activate();
