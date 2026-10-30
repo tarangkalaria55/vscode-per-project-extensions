@@ -1,26 +1,21 @@
-# Publishes pushed v* tags on main to the VS Code Marketplace; a version that is already published is skipped.
+# Publishes the .vsix that CI built to the VS Code Marketplace; a version that is already published is skipped.
+# Called by ci.yml only after tests pass on every OS, so it never runs on its own.
 # https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 # Requires a VSCE_PAT repo secret: an Azure DevOps PAT for "All accessible organizations" with the Marketplace > Manage scope.
 name: Publish
 
 on:
-  push:
-    tags: ['v*']
+  workflow_call:
+    secrets:
+      VSCE_PAT:
+        required: true
+
+permissions:
+  contents: read
 
 jobs:
-  # GitHub can't require both a tag and a branch in the trigger, so check here that the tagged commit is on main.
-  on-main:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
   publish:
-    needs: on-main
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -28,8 +23,9 @@ jobs:
           node-version: lts/*
           cache: npm
       - run: npm ci
-      # Never publish a build whose tests fail; VS Code needs xvfb for a display on Linux.
-      - run: xvfb-run -a npm test
-      - run: npx vsce publish --skip-duplicate
+      - uses: actions/download-artifact@v7
+        with:
+          name: vsix
+      - run: npx vsce publish --skip-duplicate --packagePath *.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

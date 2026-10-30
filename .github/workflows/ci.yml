@@ -1,6 +1,6 @@
 # Tests on every OS and uploads the .vsix.
 # https://code.visualstudio.com/api/working-with-extensions/continuous-integration
-# Runs only for pushed v* tags on main; publishing is done by publish.yml.
+# Runs only for pushed v* tags on main, then publishes via publish.yml if every build passed.
 name: CI
 
 on:
@@ -44,3 +44,8 @@ jobs:
         with:
           name: vsix
           path: '*.vsix'
+  publish:
+    needs: build
+    uses: ./.github/workflows/publish.yml
+    secrets:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
