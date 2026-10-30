@@ -1,19 +1,26 @@
 # Tests on every OS and uploads the .vsix.
 # https://code.visualstudio.com/api/working-with-extensions/continuous-integration
-# Publishing is done by publish.yml on pushes to main.
+# Runs only for pushed v* tags on main; publishing is done by publish.yml.
 name: CI
 
 on:
   push:
-    branches: [main]
     tags: ['v*']
-  pull_request:
 
 permissions:
   contents: read
 
 jobs:
+  # GitHub can't require both a tag and a branch in the trigger, so check here that the tagged commit is on main.
+  on-main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
   build:
+    needs: on-main
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
