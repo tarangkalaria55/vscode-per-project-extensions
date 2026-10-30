@@ -1,11 +1,12 @@
 # Tests on every OS and uploads the .vsix.
 # https://code.visualstudio.com/api/working-with-extensions/continuous-integration
-# Publishing is done by publish.yml (Trusted Publishing) on v* tags.
+# Publishing is done by publish.yml on pushes to main.
 name: CI
 
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
 
 permissions:

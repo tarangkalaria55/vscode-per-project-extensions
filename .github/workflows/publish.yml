@@ -1,18 +1,17 @@
-# Publishes v* tags to the VS Code Marketplace with Trusted Publishing (OIDC): no stored token.
+# Publishes pushes to main to the VS Code Marketplace; a push that doesn't bump the version in package.json is skipped.
 # https://code.visualstudio.com/api/working-with-extensions/publishing-extension
-# Requires a Trusted Publishing policy on the Marketplace publisher pointing at this file (publish.yml).
+# Requires a VSCE_PAT repo secret: an Azure DevOps PAT for "All accessible organizations" with the Marketplace > Manage scope.
 name: Publish
 
 on:
   push:
-    tags: ['v*'] # tags only: publishing every push to main would fail once the version is on the Marketplace
+    branches: [main]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # lets the job request the GitHub OIDC token vsce exchanges for a Marketplace credential
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -22,4 +21,6 @@ jobs:
       - run: npm ci
       # Never publish a build whose tests fail; VS Code needs xvfb for a display on Linux.
       - run: xvfb-run -a npm test
-      - run: npx vsce publish --oidc
+      - run: npx vsce publish --skip-duplicate
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
