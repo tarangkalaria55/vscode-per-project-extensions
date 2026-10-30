@@ -132,4 +132,14 @@ profiles and relaunching without touching your own setup.
 | `npm run sandbox:list` | List extensions installed in the sandbox |
 
 **CI:** `.github/workflows/ci.yml` runs the tests on Windows, macOS and Linux (with
-`xvfb-run`), uploads the `.vsix`, and publishes on `v*` tags when the `VSCE_PAT` secret is set.
+`xvfb-run`) and uploads the `.vsix`.
+
+**Publishing:**
+
+- *From GitHub (recommended):* push a `v*` tag (`npm version patch && git push --follow-tags`).
+  `.github/workflows/publish.yml` tests and publishes with Trusted Publishing (`vsce publish --oidc`), so no token is
+  stored. One-time setup: on the [Marketplace publisher page](https://marketplace.visualstudio.com/manage) open
+  **Trusted Publishing → Create** with owner `tarangkalaria55`, repository `vscode-per-project-extensions`, workflow
+  `publish.yml`, environment empty.
+- *From your machine:* `npx vsce login tarangkalaria55` with a Marketplace PAT, then `npm run deploy`.
+  (`--oidc` only works inside GitHub Actions.)
