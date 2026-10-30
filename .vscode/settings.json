@@ -1,0 +1,26 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.jj": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        // Downloaded VS Code and third-party extensions: not part of this project.
+        ".vscode-test": true,
+        ".sandbox": true
+    },
+    "search.exclude": {
+        "dist": true,
+        "out": true,
+        ".vscode-test": true,
+        ".sandbox": true
+    },
+    // Fewer watched files: these folders are large and only change through builds/test runs.
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/.vscode-test/**": true,
+        "**/.sandbox/**": true
+    },
+    "hide-files.files": [],
+}

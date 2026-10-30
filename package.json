@@ -1,0 +1,181 @@
+{
+  "name": "per-project-extensions",
+  "displayName": "Per-Project Extensions",
+  "description": "Enable only the extensions each project needs, listed in .vscode/required-extensions.json, to save memory and CPU.",
+  "version": "0.1.0",
+  "publisher": "tarangkalaria55",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "extensions",
+    "performance",
+    "profile",
+    "memory",
+    "workspace"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:.vscode/required-extensions.json"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "projectExtensions.analyze",
+        "title": "Review Required Extensions",
+        "category": "Per-Project Extensions"
+      },
+      {
+        "command": "projectExtensions.detect",
+        "title": "Detect Required Extensions From Project (Re-scan)",
+        "category": "Per-Project Extensions"
+      },
+      {
+        "command": "projectExtensions.openFile",
+        "title": "Open required-extensions.json",
+        "category": "Per-Project Extensions"
+      },
+      {
+        "command": "projectExtensions.createProfile",
+        "title": "Open in Project Profile (Only Required Extensions)",
+        "category": "Per-Project Extensions"
+      },
+      {
+        "command": "projectExtensions.openLean",
+        "title": "Reopen Window With Unrequired Extensions Disabled",
+        "category": "Per-Project Extensions"
+      },
+      {
+        "command": "projectExtensions.showActive",
+        "title": "Show Extension Report",
+        "category": "Per-Project Extensions"
+      },
+      {
+        "command": "projectExtensions.useDefaultProfile",
+        "title": "Reopen in Default Profile (All Extensions)",
+        "category": "Per-Project Extensions"
+      }
+    ],
+    "configuration": {
+      "title": "Per-Project Extensions",
+      "properties": {
+        "projectExtensions.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Turn Per-Project Extensions on or off. When off it does no background work at all: no status bar item, no file watchers, no startup check and no syncing of `required-extensions.json`. Takes effect immediately; can be set per workspace."
+        },
+        "projectExtensions.alwaysEnabled": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Extension IDs to keep enabled in every project in addition to `.vscode/required-extensions.json` (e.g. `github.copilot`, `vscodevim.vim`). Merged from user and workspace settings."
+        },
+        "projectExtensions.keepDeclarativeExtensions": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also keep extensions that have no code (themes, icon themes, grammars, snippets, keymaps) even when not listed in required-extensions.json. Off by default: only listed extensions stay enabled. Can be overridden per project in required-extensions.json."
+        },
+        "projectExtensions.maxFilesToScan": {
+          "type": "number",
+          "default": 5000,
+          "description": "Maximum number of workspace files sampled to detect languages."
+        },
+        "projectExtensions.excludeGlob": {
+          "type": "string",
+          "default": "**/{node_modules,.git,dist,out,build,target,.venv,venv,__pycache__,.next,bin,obj}/**",
+          "description": "Glob of folders skipped while scanning."
+        },
+        "projectExtensions.notifyOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "On startup, notify when unneeded extensions are running in this workspace."
+        },
+        "projectExtensions.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Optional absolute path to the VS Code CLI (code / code.cmd). Auto-detected when empty."
+        },
+        "projectExtensions.syncOnInstall": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Keep `.vscode/required-extensions.json` in sync: installing an extension in this project's window adds it, uninstalling removes it (even if it is still running until restart). Only the focused window updates its file."
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "**/.vscode/required-extensions.json",
+        "url": "./schemas/required-extensions.schema.json"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "projectExtensions.analyze",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "projectExtensions.detect",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "projectExtensions.openFile",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "projectExtensions.createProfile",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "projectExtensions.openLean",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "projectExtensions.showActive",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "projectExtensions.useDefaultProfile",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "check-types": "tsc --noEmit",
+    "compile": "npm run check-types && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile",
+    "test": "vscode-test",
+    "vsix": "vsce package --allow-missing-repository --skip-license",
+    "deploy": "vsce publish",
+    "sandbox:setup": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --install-extension dbaeumer.vscode-eslint --install-extension esbenp.prettier-vscode --install-extension editorconfig.editorconfig --install-extension golang.go --install-extension redhat.vscode-yaml --install-extension mikestead.dotenv --install-extension streetsidesoftware.code-spell-checker",
+    "sandbox:list": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --list-extensions --show-versions",
+    "sandbox:install": "vsce package --allow-missing-repository --skip-license -o per-project-extensions.vsix && code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --install-extension per-project-extensions.vsix --force",
+    "sandbox:open": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --new-window test-fixtures/sample-project",
+    "sandbox:open-default": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --profile Default test-fixtures/sample-project"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0",
+    "@vscode/vsce": "^4.1.0",
+    "esbuild": "^0.25.0",
+    "@types/mocha": "^10.0.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.0",
+    "npm-run-all": "^4.1.5"
+  }
+}

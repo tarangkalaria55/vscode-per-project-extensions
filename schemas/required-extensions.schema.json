@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project required extensions",
+  "type": "object",
+  "properties": {
+    "required": {
+      "type": "array",
+      "description": "Extension IDs (publisher.name) this project needs. Everything else is disabled by Per-Project Extensions.",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]+[.][A-Za-z0-9_.-]+$"
+      },
+      "uniqueItems": true
+    },
+    "keepDeclarativeExtensions": {
+      "type": "boolean",
+      "description": "Also keep code-less extensions (themes, icon themes, grammars, snippets) that are not listed. Defaults to the projectExtensions.keepDeclarativeExtensions setting (false)."
+    }
+  },
+  "required": [
+    "required"
+  ],
+  "additionalProperties": false
+}

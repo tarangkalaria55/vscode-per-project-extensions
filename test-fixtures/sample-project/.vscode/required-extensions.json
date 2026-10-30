@@ -1,0 +1,7 @@
+{
+  "required": [
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "firefox-devtools.vscode-firefox-debug"
+  ]
+}
