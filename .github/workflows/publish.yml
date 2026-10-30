@@ -1,29 +1,25 @@
-# Publishes to the VS Code Marketplace with Trusted Publishing (OIDC), no stored token.
+# Publishes v* tags to the VS Code Marketplace with Trusted Publishing (OIDC): no stored token.
 # https://code.visualstudio.com/api/working-with-extensions/publishing-extension
 # Requires a Trusted Publishing policy on the Marketplace publisher pointing at this file (publish.yml).
 name: Publish
 
 on:
   push:
-    tags: ['v*']
-
-permissions:
-  contents: read
-  id-token: write # lets the job request the GitHub OIDC token vsce exchanges for a Marketplace credential
+    tags: ['v*'] # tags only: publishing every push to main would fail once the version is on the Marketplace
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write # lets the job request the GitHub OIDC token vsce exchanges for a Marketplace credential
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22.x
+          node-version: lts/*
           cache: npm
       - run: npm ci
       # Never publish a build whose tests fail; VS Code needs xvfb for a display on Linux.
       - run: xvfb-run -a npm test
-      - run: npx @vscode/vsce publish --oidc
+      - run: npx vsce publish --oidc

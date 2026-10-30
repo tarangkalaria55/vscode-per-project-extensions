@@ -99,10 +99,9 @@ The extension is built to stay out of the way:
 ## Develop
 
 Set up following the official guides for
-[bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension),
-[testing](https://code.visualstudio.com/api/working-with-extensions/testing-extension),
-[publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) and
-[CI](https://code.visualstudio.com/api/working-with-extensions/continuous-integration).
+[bundling](https://code.visualstudio.com/api/working-with-extensions/bundling-extension) and
+[testing](https://code.visualstudio.com/api/working-with-extensions/testing-extension).
+CI and releasing are described in [PUBLISHING.md](PUBLISHING.md).
 
 | Command | What it does |
 |---|---|
@@ -130,16 +129,3 @@ profiles and relaunching without touching your own setup.
 | `npm run sandbox:open` | Open `test-fixtures/sample-project` in the sandbox |
 | `npm run sandbox:open-default` | Same, forced into the Default profile |
 | `npm run sandbox:list` | List extensions installed in the sandbox |
-
-**CI:** `.github/workflows/ci.yml` runs the tests on Windows, macOS and Linux (with
-`xvfb-run`) and uploads the `.vsix`.
-
-**Publishing:**
-
-- *From GitHub (recommended):* push a `v*` tag (`npm version patch && git push --follow-tags`).
-  `.github/workflows/publish.yml` tests and publishes with Trusted Publishing (`vsce publish --oidc`), so no token is
-  stored. One-time setup: on the [Marketplace publisher page](https://marketplace.visualstudio.com/manage) open
-  **Trusted Publishing → Create** with owner `tarangkalaria55`, repository `vscode-per-project-extensions`, workflow
-  `publish.yml`, environment empty.
-- *From your machine:* `npx vsce login tarangkalaria55` with a Marketplace PAT, then `npm run deploy`.
-  (`--oidc` only works inside GitHub Actions.)

@@ -6,7 +6,6 @@
         "**/.jj": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        // Downloaded VS Code and third-party extensions: not part of this project.
         ".vscode-test": true,
         ".sandbox": true
     },

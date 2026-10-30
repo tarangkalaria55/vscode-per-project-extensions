@@ -13,3 +13,4 @@ esbuild.js
 tsconfig.json
 .gitignore
 *.vsix
+PUBLISHING.md
