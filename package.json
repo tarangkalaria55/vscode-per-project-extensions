@@ -5,6 +5,14 @@
   "version": "0.1.0",
   "publisher": "tarangkalaria55",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tarangkalaria55/vscode-per-project-extensions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tarangkalaria55/vscode-per-project-extensions/issues"
+  },
+  "homepage": "https://github.com/tarangkalaria55/vscode-per-project-extensions#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -159,11 +167,11 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile",
     "test": "vscode-test",
-    "vsix": "vsce package --allow-missing-repository --skip-license",
+    "vsix": "vsce package",
     "deploy": "vsce publish",
     "sandbox:setup": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --install-extension dbaeumer.vscode-eslint --install-extension esbenp.prettier-vscode --install-extension editorconfig.editorconfig --install-extension golang.go --install-extension redhat.vscode-yaml --install-extension mikestead.dotenv --install-extension streetsidesoftware.code-spell-checker",
     "sandbox:list": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --list-extensions --show-versions",
-    "sandbox:install": "vsce package --allow-missing-repository --skip-license -o per-project-extensions.vsix && code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --install-extension per-project-extensions.vsix --force",
+    "sandbox:install": "vsce package -o per-project-extensions.vsix && code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --install-extension per-project-extensions.vsix --force",
     "sandbox:open": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --new-window test-fixtures/sample-project",
     "sandbox:open-default": "code --user-data-dir .sandbox/user-data --extensions-dir .sandbox/extensions --profile Default test-fixtures/sample-project"
   },
