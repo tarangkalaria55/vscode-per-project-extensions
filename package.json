@@ -2,7 +2,7 @@
   "name": "per-project-extensions",
   "displayName": "Per-Project Extensions",
   "description": "Enable only the extensions each project needs, listed in .vscode/required-extensions.json, to save memory and CPU.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "tarangkalaria55",
   "license": "MIT",
   "repository": {
